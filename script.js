@@ -298,10 +298,9 @@ analyzeButton.addEventListener("click", async () => {
 
   const analysisBar = document.getElementById("analysisBar");
   const progress = document.getElementById("analysisProgress");
-  const timer = document.getElementById("analysisTimer");
 
   // Make sure the analysis elements actually exist
-  if (!analysisBar || !progress || !timer) {
+  if (!analysisBar || !progress) {
 
     console.error("Analysis bar elements are missing!");
 
@@ -315,7 +314,6 @@ analyzeButton.addEventListener("click", async () => {
   analysisBar.classList.remove("hidden");
 
   progress.style.width = "0%";
-  timer.textContent = "3.0s";
 
   // Show first message
   typeText("CALCULATING TOE ENERGY...");
@@ -341,14 +339,6 @@ analyzeButton.addEventListener("click", async () => {
       progress.style.width =
         `${percentage * 100}%`;
 
-      const remaining =
-        Math.max(
-          0,
-          (duration - elapsed) / 1000
-        );
-
-      timer.textContent =
-        remaining.toFixed(1) + "s";
 
       if (percentage < 1) {
 
@@ -370,7 +360,6 @@ analyzeButton.addEventListener("click", async () => {
   // --------------------------------
 
   progress.style.width = "100%";
-  timer.textContent = "0.0s";
 
   await typeText("ANALYSIS COMPLETE.");
 
@@ -512,13 +501,16 @@ function showResults() {
 
 function launchConfetti() {
 
-  const pieces = 100;
+  const pieces = 300;
 
   const confettiColors = [
     "#FFE700",
+    "#FF3B81",
+    "#00E5FF",
     "#FF6B35",
     "#FF4F64",
-    "#FFB26B",
+    "#A855F7",
+    "#7CFF00",
     "#FFF1C1"
   ];
 
@@ -528,12 +520,14 @@ function launchConfetti() {
 
     piece.classList.add("confetti");
 
+    // Start from the TOP of the screen
     piece.style.left =
       Math.random() * 100 + "vw";
 
     piece.style.top =
-      Math.random() * 20 + "vh";
+      -20 - Math.random() * 100 + "px";
 
+    // Bright random colour
     piece.style.background =
       confettiColors[
         Math.floor(
@@ -541,19 +535,35 @@ function launchConfetti() {
         )
       ];
 
+    // Random horizontal drift
     piece.style.setProperty(
       "--x",
-      (Math.random() * 500 - 250) + "px"
+      (Math.random() * 300 - 150) + "px"
     );
 
+    // Random size
+    const size =
+      6 + Math.random() * 10;
+
+    piece.style.width =
+      `${size}px`;
+
+    piece.style.height =
+      `${size}px`;
+
+    // Stagger slightly
     piece.style.animationDelay =
-      Math.random() * 0.4 + "s";
+      Math.random() * 0.8 + "s";
+
+    // Random fall duration
+    piece.style.animationDuration =
+      1.8 + Math.random() * 1.8 + "s";
 
     confettiContainer.appendChild(piece);
 
     setTimeout(() => {
       piece.remove();
-    }, 2000);
+    }, 4500);
 
   }
 
