@@ -5,6 +5,116 @@
 // -----------------------------
 // ELEMENTS
 // -----------------------------
+console.log("SCRIPT LOADED");
+
+let faceCascade;
+
+function waitForOpenCV() {
+  if (typeof cv !== "undefined" && cv.Mat) {
+    console.log("OPENCV LOADED");
+
+    faceCascade = new cv.CascadeClassifier();
+
+fetch("haarcascade_frontalface_default.xml")
+  .then(response => response.arrayBuffer())
+  .then(buffer => {
+    const data = new Uint8Array(buffer);
+
+    cv.FS_createDataFile(
+      "/",
+      "haarcascade_frontalface_default.xml",
+      data,
+      true,
+      false,
+      false
+    );
+
+    faceCascade.load("haarcascade_frontalface_default.xml");
+
+    console.log("FACE MODEL LOADED");
+  })
+  .catch(error => {
+    console.error("FACE MODEL FAILED TO LOAD:", error);
+  });
+    return;
+  }
+
+  console.log("Waiting for OpenCV...");
+  setTimeout(waitForOpenCV, 100);
+}
+
+waitForOpenCV();
+
+let faceDetected = false;
+
+function detectFace() {
+  if (!faceCascade || !camera.videoWidth) {
+    requestAnimationFrame(detectFace);
+    return;
+  }
+
+  const canvas = document.createElement("canvas");
+  canvas.width = camera.videoWidth;
+  canvas.height = camera.videoHeight;
+
+  const ctx = canvas.getContext("2d");
+
+  function scan() {
+    if (!camera.videoWidth) {
+      requestAnimationFrame(scan);
+      return;
+    }
+
+    ctx.drawImage(
+      camera,
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    const src = cv.imread(canvas);
+    const gray = new cv.Mat();
+
+    cv.cvtColor(
+      src,
+      gray,
+      cv.COLOR_RGBA2GRAY
+    );
+
+    const faces = new cv.RectVector();
+    const minSize = new cv.Size(50, 50);
+
+    faceCascade.detectMultiScale(
+      gray,
+      faces,
+      1.1,
+      3,
+      0,
+      minSize
+    );
+
+    if (faces.size() > 0 && !faceDetected) {
+      faceDetected = true;
+      console.log("👁️ FACE DETECTED");
+      speechBubble.textContent = "I SEE YOU.";
+    }
+
+    if (faces.size() === 0 && faceDetected) {
+      faceDetected = false;
+      console.log("NO FACE");
+      speechBubble.textContent = "WHERE DID YOU GO?";
+    }
+
+    src.delete();
+    gray.delete();
+    faces.delete();
+
+    requestAnimationFrame(scan);
+  }
+
+  scan();
+}
 
 const sock = document.getElementById("sock");
 
@@ -226,6 +336,8 @@ startCameraButton.addEventListener("click", async () => {
     });
 
     camera.srcObject = cameraStream;
+
+    detectFace();
 
     cameraSection.classList.remove("hidden");
 
