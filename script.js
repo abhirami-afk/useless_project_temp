@@ -8,12 +8,14 @@
 console.log("SCRIPT LOADED");
 
 let faceCascade;
+let smileCascade;
 
 function waitForOpenCV() {
   if (typeof cv !== "undefined" && cv.Mat) {
     console.log("OPENCV LOADED");
 
     faceCascade = new cv.CascadeClassifier();
+    smileCascade = new cv.CascadeClassifier();
 
 fetch("haarcascade_frontalface_default.xml")
   .then(response => response.arrayBuffer())
@@ -32,6 +34,27 @@ fetch("haarcascade_frontalface_default.xml")
     faceCascade.load("haarcascade_frontalface_default.xml");
 
     console.log("FACE MODEL LOADED");
+    fetch("haarcascade_smile.xml")
+  .then(response => response.arrayBuffer())
+  .then(buffer => {
+    const data = new Uint8Array(buffer);
+
+    cv.FS_createDataFile(
+      "/",
+      "haarcascade_smile.xml",
+      data,
+      true,
+      false,
+      false
+    );
+
+    smileCascade.load("haarcascade_smile.xml");
+
+    console.log("SMILE MODEL LOADED");
+  })
+  .catch(error => {
+    console.error("SMILE MODEL FAILED TO LOAD:", error);
+  });
   })
   .catch(error => {
     console.error("FACE MODEL FAILED TO LOAD:", error);
@@ -46,9 +69,10 @@ fetch("haarcascade_frontalface_default.xml")
 waitForOpenCV();
 
 let faceDetected = false;
+let smileFrames = 0;
 
 function detectFace() {
-  if (!faceCascade || !camera.videoWidth) {
+  if (!faceCascade || !smileCascade || !camera.videoWidth) {
     requestAnimationFrame(detectFace);
     return;
   }
@@ -94,14 +118,61 @@ function detectFace() {
       minSize
     );
 
-    if (faces.size() > 0 && !faceDetected) {
-      faceDetected = true;
-      console.log("👁️ FACE DETECTED");
-      speechBubble.textContent = "I SEE YOU.";
+    if (faces.size() > 0) {
+      if (!faceDetected) {
+        faceDetected = true;
+
+        console.log("👁️ FACE DETECTED");
+        speechBubble.textContent = "I SEE YOU.";
+      }
+
+      // Get the first detected face
+      const face = faces.get(0);
+
+      // Look at the lower half of the face
+      const mouthRegion = gray.roi(
+        new cv.Rect(
+          face.x,
+          face.y + Math.floor(face.height * 0.55),
+          face.width,
+          Math.floor(face.height * 0.45)
+        )
+      );
+
+      const smiles = new cv.RectVector();
+      const smileMinSize = new cv.Size(30, 20);
+
+      smileCascade.detectMultiScale(
+        mouthRegion,
+        smiles,
+        1.1,
+        35,
+        0,
+        smileMinSize
+      );
+
+      if (smiles.size() > 0) {
+  smileFrames++;
+} else {
+  smileFrames = 0;
+}
+
+if (smileFrames >= 5) {
+  console.log("😄 SMILE CONFIRMED");
+
+  setEmotion("happy");
+  speechBubble.textContent = "OH. YOU'RE HAPPY.";
+
+  smileFrames = 0;
+}
+
+      mouthRegion.delete();
+      smiles.delete();
     }
 
     if (faces.size() === 0 && faceDetected) {
       faceDetected = false;
+
       console.log("NO FACE");
       speechBubble.textContent = "WHERE DID YOU GO?";
     }
