@@ -281,7 +281,12 @@ document
 
 analyzeButton.addEventListener("click", async () => {
 
-  if (analysisRunning) return;
+  console.log("ANALYZE BUTTON CLICKED");
+
+  if (analysisRunning) {
+    console.log("Analysis already running");
+    return;
+  }
 
   analysisRunning = true;
   analyzeButton.disabled = true;
@@ -295,18 +300,28 @@ analyzeButton.addEventListener("click", async () => {
   const progress = document.getElementById("analysisProgress");
   const timer = document.getElementById("analysisTimer");
 
-  // Show analysis bar
+  // Make sure the analysis elements actually exist
+  if (!analysisBar || !progress || !timer) {
+
+    console.error("Analysis bar elements are missing!");
+
+    analysisRunning = false;
+    analyzeButton.disabled = false;
+
+    return;
+  }
+
+  // SHOW ANALYSIS BAR
   analysisBar.classList.remove("hidden");
 
-  // Reset progress
   progress.style.width = "0%";
   timer.textContent = "3.0s";
 
-  // Change speech WITHOUT waiting for it to finish
+  // Show first message
   typeText("CALCULATING TOE ENERGY...");
 
   // --------------------------------
-  // 3 SECOND ANALYSIS
+  // EXACTLY 3 SECOND ANALYSIS
   // --------------------------------
 
   const duration = 3000;
@@ -314,20 +329,18 @@ analyzeButton.addEventListener("click", async () => {
 
   await new Promise(resolve => {
 
-    function updateProgress(now) {
+    function updateProgress(currentTime) {
 
-      const elapsed = now - startTime;
+      const elapsed = currentTime - startTime;
 
       const percentage = Math.min(
         elapsed / duration,
         1
       );
 
-      // Progress bar
       progress.style.width =
         `${percentage * 100}%`;
 
-      // Timer
       const remaining =
         Math.max(
           0,
@@ -337,7 +350,7 @@ analyzeButton.addEventListener("click", async () => {
       timer.textContent =
         remaining.toFixed(1) + "s";
 
-      if (elapsed < duration) {
+      if (percentage < 1) {
 
         requestAnimationFrame(updateProgress);
 
@@ -346,7 +359,6 @@ analyzeButton.addEventListener("click", async () => {
         resolve();
 
       }
-
     }
 
     requestAnimationFrame(updateProgress);
@@ -366,7 +378,6 @@ analyzeButton.addEventListener("click", async () => {
     setTimeout(resolve, 300)
   );
 
-  // Hide analysis bar
   analysisBar.classList.add("hidden");
 
   // --------------------------------
