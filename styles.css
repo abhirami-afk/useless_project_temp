@@ -131,105 +131,167 @@ body {
 }
 
 /* =========================
-   SOCK
+   CUTE PIXEL SOCK
 ========================= */
 
 .sock {
   width: 150px;
-  height: 180px;
-
-  background: #FFE700;
+  height: 190px;
 
   position: relative;
 
+  background: #FFE700;
+
   margin-top: 20px;
 
-  border-radius: 18px 18px 12px 12px;
+  /*
+    The sock is built as a chunky
+    pixel-art silhouette rather than
+    a normal rounded rectangle.
+  */
+  clip-path: polygon(
+    18% 0%,
+    82% 0%,
+    82% 8%,
+    88% 8%,
+    88% 18%,
+    84% 18%,
+    84% 58%,
+    91% 62%,
+    96% 69%,
+    100% 77%,
+    100% 86%,
+    94% 93%,
+    84% 97%,
+    70% 100%,
+    48% 100%,
+    31% 96%,
+    20% 90%,
+    14% 82%,
+    10% 70%,
+    12% 58%,
+    18% 51%
+  );
 
   transform: rotate(-4deg);
 
-  box-shadow:
-    8px 8px 0 #24103D;
+  filter:
+    drop-shadow(8px 8px 0 #24103D);
 
   animation: idleFloat 2.5s ease-in-out infinite;
 
   z-index: 2;
+
+  image-rendering: pixelated;
 }
 
-/* sock opening */
 
-.sock::before {
-  content: "";
+/* -------------------------
+   SOCK CUFF
+------------------------- */
 
+.sock-cuff {
   position: absolute;
 
-  top: -8px;
-  left: 10px;
+  top: 0;
+  left: 16px;
 
-  width: 130px;
-  height: 25px;
+  width: 118px;
+  height: 28px;
 
   background: #FFF1C1;
 
-  border: 5px solid #24103D;
+  border-bottom: 6px solid #24103D;
+
+  /*
+    little pixel steps
+  */
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% 75%,
+    94% 75%,
+    94% 100%,
+    6% 100%,
+    6% 75%,
+    0% 75%
+  );
+
+  z-index: 3;
 }
 
-/* foot */
 
-.sock::after {
-  content: "";
-
-  position: absolute;
-
-  bottom: -15px;
-  right: -50px;
-
-  width: 90px;
-  height: 70px;
-
-  background: #FFE700;
-
-  border-radius: 10px 40px 20px 10px;
-
-  border-right: 8px solid #24103D;
-  border-bottom: 8px solid #24103D;
-}
-
-/* =========================
+/* -------------------------
    SOCK FACE
-========================= */
+------------------------- */
 
 .sock-face {
   position: absolute;
 
   top: 65px;
-  left: 35px;
+  left: 38px;
 
   display: flex;
 
-  gap: 45px;
+  gap: 43px;
 
   color: #24103D;
 
-  font-size: 24px;
-
   font-family: monospace;
 
-  z-index: 3;
+  font-size: 24px;
+
+  font-weight: bold;
+
+  z-index: 5;
 }
 
 .sock-mouth {
   position: absolute;
 
-  top: 92px;
-  left: 65px;
-
-  font-size: 30px;
+  /*
+    MOVED UP
+  */
+  top: 91px;
+  left: 66px;
 
   color: #24103D;
 
-  z-index: 3;
+  font-family: monospace;
+
+  font-size: 28px;
+
+  font-weight: bold;
+
+  z-index: 5;
 }
+
+
+/* -------------------------
+   BLUSH
+------------------------- */
+
+.sock-blush {
+  position: absolute;
+
+  width: 14px;
+  height: 7px;
+
+  background: #FF6B8A;
+
+  z-index: 4;
+}
+
+.left-blush {
+  top: 88px;
+  left: 27px;
+}
+
+.right-blush {
+  top: 88px;
+  right: 29px;
+}
+
 
 /* =========================
    SOCK ANIMATIONS
@@ -247,6 +309,9 @@ body {
 
 }
 
+
+/* HAPPY */
+
 .sock.happy {
   animation: happyJump 0.45s ease-in-out infinite alternate;
 }
@@ -263,6 +328,9 @@ body {
 
 }
 
+
+/* SAD */
+
 .sock.sad {
   animation: sadFloat 4s ease-in-out infinite;
 }
@@ -278,6 +346,9 @@ body {
   }
 
 }
+
+
+/* ANGRY */
 
 .sock.angry {
   background: #FF4F64;
@@ -301,7 +372,8 @@ body {
 
 }
 
-/* result dance */
+
+/* RESULT DANCE */
 
 .sock.dance {
   animation: sockDance 0.25s ease-in-out infinite alternate;
