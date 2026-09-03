@@ -284,14 +284,10 @@ analyzeButton.addEventListener("click", async () => {
   if (analysisRunning) return;
 
   analysisRunning = true;
-
   analyzeButton.disabled = true;
 
-  results.classList.remove("hidden");
-
-setTimeout(() => {
-  sock.classList.add("dance");
-}, 250);
+  results.classList.add("hidden");
+  sock.classList.remove("dance");
 
   footerStatus.textContent = "ANALYZING";
 
@@ -299,85 +295,67 @@ setTimeout(() => {
   const progress = document.getElementById("analysisProgress");
   const timer = document.getElementById("analysisTimer");
 
+  // Show analysis bar
   analysisBar.classList.remove("hidden");
 
-  // Reset bar
+  // Reset progress
   progress.style.width = "0%";
+  timer.textContent = "3.0s";
 
-  // Initial message
-  await typeText("ANALYZING...");
+  // Change speech WITHOUT waiting for it to finish
+  typeText("CALCULATING TOE ENERGY...");
 
-  /*
-    EXACTLY 3 SECONDS
-  */
+  // --------------------------------
+  // 3 SECOND ANALYSIS
+  // --------------------------------
 
   const duration = 3000;
   const startTime = performance.now();
 
-  function updateAnalysis(currentTime) {
+  await new Promise(resolve => {
 
-    const elapsed = currentTime - startTime;
+    function updateProgress(now) {
 
-    const percentage = Math.min(
-      elapsed / duration,
-      1
-    );
+      const elapsed = now - startTime;
 
-    progress.style.width =
-      `${percentage * 100}%`;
-
-    const remaining =
-      Math.max(
-        0,
-        (duration - elapsed) / 1000
+      const percentage = Math.min(
+        elapsed / duration,
+        1
       );
 
-    timer.textContent =
-      remaining.toFixed(1) + "s";
+      // Progress bar
+      progress.style.width =
+        `${percentage * 100}%`;
 
-    if (percentage < 1) {
+      // Timer
+      const remaining =
+        Math.max(
+          0,
+          (duration - elapsed) / 1000
+        );
 
-      requestAnimationFrame(updateAnalysis);
+      timer.textContent =
+        remaining.toFixed(1) + "s";
 
-    }
+      if (elapsed < duration) {
 
-  }
+        requestAnimationFrame(updateProgress);
 
-  requestAnimationFrame(updateAnalysis);
+      } else {
 
-  /*
-    Sock dialogue happens DURING
-    the 3-second analysis instead
-    of extending it.
-  */
+        resolve();
 
-  const messages = [
-    "CALCULATING TOE ENERGY...",
-    "CONSULTING THE SOCK ARCHIVES...",
-    randomDialogue()
-  ];
-
-  let messageIndex = 0;
-
-  const messageInterval = setInterval(() => {
-
-    if (messageIndex < messages.length) {
-
-      typeText(messages[messageIndex]);
-
-      messageIndex++;
+      }
 
     }
 
-  }, 900);
+    requestAnimationFrame(updateProgress);
 
+  });
 
-  // Wait exactly 3 seconds
-  await new Promise(resolve =>
-    setTimeout(resolve, duration)
-  );
-
-  clearInterval(messageInterval);
+  // --------------------------------
+  // ANALYSIS FINISHED
+  // --------------------------------
 
   progress.style.width = "100%";
   timer.textContent = "0.0s";
@@ -385,15 +363,22 @@ setTimeout(() => {
   await typeText("ANALYSIS COMPLETE.");
 
   await new Promise(resolve =>
-    setTimeout(resolve, 250)
+    setTimeout(resolve, 300)
   );
 
+  // Hide analysis bar
   analysisBar.classList.add("hidden");
 
-  // Countdown
+  // --------------------------------
+  // COUNTDOWN
+  // --------------------------------
+
   await runCountdown();
 
-  // Generate result
+  // --------------------------------
+  // RESULTS
+  // --------------------------------
+
   generateResults();
 
   launchConfetti();
@@ -401,7 +386,6 @@ setTimeout(() => {
   showResults();
 
   analysisRunning = false;
-
   analyzeButton.disabled = false;
 
 });
@@ -420,40 +404,14 @@ async function runCountdown() {
 
     countdown.textContent = number;
 
+    // Restart the animation
     countdown.classList.remove("show");
 
-    // Restart animation cleanly
     void countdown.offsetWidth;
 
     countdown.classList.add("show");
 
-    await new Promise(resolve =>
-      setTimeout(resolve, 1000)
-    );
-
-  }
-
-  countdown.classList.add("hidden");
-
-}
-
-async function runCountdown() {
-
-  countdown.classList.remove("hidden");
-
-  const numbers = ["3", "2", "1"];
-
-  for (const number of numbers) {
-
-    countdown.textContent = number;
-
-    countdown.classList.remove("show");
-
-    // Restart animation cleanly
-    void countdown.offsetWidth;
-
-    countdown.classList.add("show");
-
+    // Each number stays for exactly 1 second
     await new Promise(resolve =>
       setTimeout(resolve, 1000)
     );
