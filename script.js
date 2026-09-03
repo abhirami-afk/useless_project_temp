@@ -406,35 +406,6 @@ setTimeout(() => {
 
 });
 
-  // -------------------------
-  // COUNTDOWN
-  // -------------------------
-
-  await typeText("I HAVE REACHED A CONCLUSION.");
-
-  await new Promise(resolve =>
-    setTimeout(resolve, 700)
-  );
-
-  await runCountdown();
-
-  // -------------------------
-  // RESULTS
-  // -------------------------
-
-  generateResults();
-
-  launchConfetti();
-
-  showResults();
-
-  analysisRunning = false;
-
-  analyzeButton.disabled = false;
-
-});
-
-
 // ============================================
 // COUNTDOWN
 // ============================================
