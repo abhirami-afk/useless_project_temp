@@ -571,26 +571,72 @@ button:active {
   pointer-events: none;
 }
 
+/* =========================
+   SMOOTH COUNTDOWN
+========================= */
+
+.countdown {
+
+  position: absolute;
+
+  inset: 0;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Press Start 2P", monospace;
+
+  font-size: 120px;
+
+  color: #FFE700;
+
+  text-shadow: 10px 10px 0 #24103D;
+
+  z-index: 20;
+
+  pointer-events: none;
+}
+
 .countdown.show {
 
-  animation: countdownPop 0.8s ease-out;
+  animation: countdownNumber 0.85s ease-out forwards;
 
 }
 
-@keyframes countdownPop {
+@keyframes countdownNumber {
 
-  from {
-    transform: scale(1.6);
+  0% {
     opacity: 0;
+
+    transform:
+      scale(0.65)
+      translateY(10px);
   }
 
-  50% {
+  20% {
     opacity: 1;
+
+    transform:
+      scale(1.08)
+      translateY(0);
   }
 
-  to {
-    transform: scale(1);
+  65% {
+    opacity: 1;
+
+    transform:
+      scale(1)
+      translateY(0);
+  }
+
+  100% {
     opacity: 0;
+
+    transform:
+      scale(1.15)
+      translateY(-8px);
   }
 
 }

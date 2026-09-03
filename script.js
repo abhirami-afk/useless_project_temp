@@ -287,34 +287,124 @@ analyzeButton.addEventListener("click", async () => {
 
   analyzeButton.disabled = true;
 
+  results.classList.remove("hidden");
+
+setTimeout(() => {
+  sock.classList.add("dance");
+}, 250);
+
   footerStatus.textContent = "ANALYZING";
 
-  results.classList.add("hidden");
+  const analysisBar = document.getElementById("analysisBar");
+  const progress = document.getElementById("analysisProgress");
+  const timer = document.getElementById("analysisTimer");
 
-  sock.classList.remove("dance");
+  analysisBar.classList.remove("hidden");
 
-  // -------------------------
-  // ANALYSIS DIALOGUE
-  // -------------------------
+  // Reset bar
+  progress.style.width = "0%";
 
-  const messages = [
-    randomDialogue(),
-    "CALCULATING FACIAL GEOMETRY...",
-    "CONSULTING THE SOCK ARCHIVES...",
-    "MEASURING TOE ENERGY...",
-    "CROSS-REFERENCING SOCK DATA...",
-    "THE SOCK IS THINKING..."
-  ];
+  // Initial message
+  await typeText("ANALYZING...");
 
-  for (const message of messages) {
+  /*
+    EXACTLY 3 SECONDS
+  */
 
-    await typeText(message);
+  const duration = 3000;
+  const startTime = performance.now();
 
-    await new Promise(resolve =>
-      setTimeout(resolve, 500)
+  function updateAnalysis(currentTime) {
+
+    const elapsed = currentTime - startTime;
+
+    const percentage = Math.min(
+      elapsed / duration,
+      1
     );
 
+    progress.style.width =
+      `${percentage * 100}%`;
+
+    const remaining =
+      Math.max(
+        0,
+        (duration - elapsed) / 1000
+      );
+
+    timer.textContent =
+      remaining.toFixed(1) + "s";
+
+    if (percentage < 1) {
+
+      requestAnimationFrame(updateAnalysis);
+
+    }
+
   }
+
+  requestAnimationFrame(updateAnalysis);
+
+  /*
+    Sock dialogue happens DURING
+    the 3-second analysis instead
+    of extending it.
+  */
+
+  const messages = [
+    "CALCULATING TOE ENERGY...",
+    "CONSULTING THE SOCK ARCHIVES...",
+    randomDialogue()
+  ];
+
+  let messageIndex = 0;
+
+  const messageInterval = setInterval(() => {
+
+    if (messageIndex < messages.length) {
+
+      typeText(messages[messageIndex]);
+
+      messageIndex++;
+
+    }
+
+  }, 900);
+
+
+  // Wait exactly 3 seconds
+  await new Promise(resolve =>
+    setTimeout(resolve, duration)
+  );
+
+  clearInterval(messageInterval);
+
+  progress.style.width = "100%";
+  timer.textContent = "0.0s";
+
+  await typeText("ANALYSIS COMPLETE.");
+
+  await new Promise(resolve =>
+    setTimeout(resolve, 250)
+  );
+
+  analysisBar.classList.add("hidden");
+
+  // Countdown
+  await runCountdown();
+
+  // Generate result
+  generateResults();
+
+  launchConfetti();
+
+  showResults();
+
+  analysisRunning = false;
+
+  analyzeButton.disabled = false;
+
+});
 
   // -------------------------
   // COUNTDOWN
@@ -361,13 +451,40 @@ async function runCountdown() {
 
     countdown.classList.remove("show");
 
-    // Force browser reflow so animation restarts
+    // Restart animation cleanly
     void countdown.offsetWidth;
 
     countdown.classList.add("show");
 
     await new Promise(resolve =>
-      setTimeout(resolve, 900)
+      setTimeout(resolve, 1000)
+    );
+
+  }
+
+  countdown.classList.add("hidden");
+
+}
+
+async function runCountdown() {
+
+  countdown.classList.remove("hidden");
+
+  const numbers = ["3", "2", "1"];
+
+  for (const number of numbers) {
+
+    countdown.textContent = number;
+
+    countdown.classList.remove("show");
+
+    // Restart animation cleanly
+    void countdown.offsetWidth;
+
+    countdown.classList.add("show");
+
+    await new Promise(resolve =>
+      setTimeout(resolve, 1000)
     );
 
   }
