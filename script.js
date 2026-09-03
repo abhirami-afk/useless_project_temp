@@ -69,6 +69,7 @@ fetch("haarcascade_frontalface_default.xml")
 waitForOpenCV();
 
 let faceDetected = false;
+let faceData = null;
 let smileFrames = 0;
 
 function detectFace() {
@@ -128,6 +129,12 @@ function detectFace() {
 
       // Get the first detected face
       const face = faces.get(0);
+      faceData = {
+  width: face.width,
+  height: face.height,
+  ratio: face.width / face.height,
+  area: face.width * face.height
+};
 
       // Look at the lower half of the face
       const mouthRegion = gray.roi(
@@ -626,29 +633,64 @@ function generateResults() {
     12
   ];
 
-  const randomSize =
-    possibleSizes[
-      Math.floor(Math.random() * possibleSizes.length)
-    ];
+  // If we somehow don't have face data,
+  // fall back to a random result.
+  if (!faceData) {
+    currentResult = {
+      footSize:
+        possibleSizes[
+          Math.floor(Math.random() * possibleSizes.length)
+        ],
 
-  const randomCompatible =
-    possibleSizes[
-      Math.floor(Math.random() * possibleSizes.length)
-    ];
+      fetishPercentage:
+        Math.floor(Math.random() * 101),
 
-  const randomPercentage =
-    Math.floor(Math.random() * 101);
+      compatibleSize:
+        possibleSizes[
+          Math.floor(Math.random() * possibleSizes.length)
+        ]
+    };
+
+    return;
+  }
+
+  // Turn face measurements into a deterministic number.
+  const faceScore =
+    (faceData.ratio * 100) +
+    (faceData.width % 50) +
+    (faceData.height % 50);
+
+  // Fictional foot size
+  const sizeIndex =
+    Math.floor(Math.abs(faceScore)) % possibleSizes.length;
+
+  const footSize = possibleSizes[sizeIndex];
+
+  // Fictional "sock compatibility" score
+  const fetishPercentage =
+    Math.floor(
+      Math.abs(
+        (faceData.width * 3) +
+        (faceData.height * 2) +
+        (faceData.ratio * 100)
+      ) % 101
+    );
+
+  // Pick a compatible size near the calculated size
+  const compatibleIndex =
+    Math.min(
+      possibleSizes.length - 1,
+      Math.max(
+        0,
+        sizeIndex + (fetishPercentage > 50 ? 1 : -1)
+      )
+    );
 
   currentResult = {
-
-    footSize: randomSize,
-
-    fetishPercentage: randomPercentage,
-
-    compatibleSize: randomCompatible
-
+    footSize: footSize,
+    fetishPercentage: fetishPercentage,
+    compatibleSize: possibleSizes[compatibleIndex]
   };
-
 }
 
 
