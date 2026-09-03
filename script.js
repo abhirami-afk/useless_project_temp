@@ -86,7 +86,7 @@ function detectFace() {
 
   function scan() {
     if (!camera.videoWidth) {
-      requestAnimationFrame(scan);
+      setTimeout(scan, 100);
       return;
     }
 
