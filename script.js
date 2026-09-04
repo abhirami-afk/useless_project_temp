@@ -5,6 +5,19 @@
 // -----------------------------
 // ELEMENTS
 // -----------------------------
+
+let syntheticData = [];
+
+fetch("data/synthetic-data.json")
+  .then(response => response.json())
+  .then(data => {
+    syntheticData = data;
+    console.log("SYNTHETIC DATA LOADED:", syntheticData.length);
+  })
+  .catch(error => {
+    console.error("FAILED TO LOAD SYNTHETIC DATA:", error);
+  });
+
 console.log("SCRIPT LOADED");
 
 let faceCascade;
@@ -618,81 +631,48 @@ async function runCountdown() {
 // ============================================
 
 function generateResults() {
-
-  const possibleSizes = [
-    7,
-    7.5,
-    8,
-    8.5,
-    9,
-    9.5,
-    10,
-    10.5,
-    11,
-    11.5,
-    12
-  ];
-
-  // If we somehow don't have face data,
-  // fall back to a random result.
-  if (!faceData) {
-    currentResult = {
-      footSize:
-        possibleSizes[
-          Math.floor(Math.random() * possibleSizes.length)
-        ],
-
-      fetishPercentage:
-        Math.floor(Math.random() * 101),
-
-      compatibleSize:
-        possibleSizes[
-          Math.floor(Math.random() * possibleSizes.length)
-        ]
-    };
-
+  if (!faceData || syntheticData.length === 0) {
+    console.log("No face data or synthetic data available.");
     return;
   }
 
-  // Turn face measurements into a deterministic number.
-  const faceScore =
-    (faceData.ratio * 100) +
-    (faceData.width % 50) +
-    (faceData.height % 50);
+  const input = {
+    faceRatio: faceData.ratio,
+    faceWidthRatio: faceData.width / camera.videoWidth,
+    faceHeightRatio: faceData.height / camera.videoHeight,
+    smileScore: smileFrames > 0 ? 1 : 0
+  };
 
-  // Fictional foot size
-  const sizeIndex =
-    Math.floor(Math.abs(faceScore)) % possibleSizes.length;
+  // Find the 10 synthetic records most similar to this face
+  const matches = syntheticData
+    .map(record => {
+      const distance =
+        Math.pow(record.faceRatio - input.faceRatio, 2) +
+        Math.pow(record.faceWidthRatio - input.faceWidthRatio, 2) +
+        Math.pow(record.faceHeightRatio - input.faceHeightRatio, 2) +
+        Math.pow(record.smileScore - input.smileScore, 2);
 
-  const footSize = possibleSizes[sizeIndex];
+      return {
+        record,
+        distance
+      };
+    })
+    .sort((a, b) => a.distance - b.distance)
+    .slice(0, 10);
 
-  // Fictional "sock compatibility" score
-  const fetishPercentage =
-    Math.floor(
-      Math.abs(
-        (faceData.width * 3) +
-        (faceData.height * 2) +
-        (faceData.ratio * 100)
-      ) % 101
-    );
-
-  // Pick a compatible size near the calculated size
-  const compatibleIndex =
-    Math.min(
-      possibleSizes.length - 1,
-      Math.max(
-        0,
-        sizeIndex + (fetishPercentage > 50 ? 1 : -1)
-      )
-    );
+  // Average the results of the closest matches
+  const average = key =>
+    matches.reduce((sum, match) => sum + match.record[key], 0) / matches.length;
 
   currentResult = {
-    footSize: footSize,
-    fetishPercentage: fetishPercentage,
-    compatibleSize: possibleSizes[compatibleIndex]
+    footSize: Math.round(average("footSize") * 2) / 2,
+    fetishPercentage: Math.round(average("fetishPercentage")),
+    compatibleSize: Math.round(average("compatibleSize") * 2) / 2
   };
-}
 
+  console.log("MATCHED SYNTHETIC RECORDS:", matches);
+  console.log("GENERATED RESULT:", currentResult);
+}
 
 // ============================================
 // SHOW RESULTS
