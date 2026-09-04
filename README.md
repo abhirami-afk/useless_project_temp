@@ -2,48 +2,110 @@
 
 
 
-# [Project Name] 🎯
+# SORTING SORT 🎯
 
 
 ## Basic Details
-### Team Name: [Name]
+### Team Name: USEFUL
 
 
 ### Team Members
-- Team Lead: [Name] - [College]
-- Member 2: [Name] - [College]
-- Member 3: [Name] - [College]
+- Team Lead: Abhirami Lakshmanan - Govt Model Engineering College
+- Member 2: Sivanee C Prem - Govt Model Engineering College
 
 ### Project Description
-[2-3 lines about what your project does]
+Sorting Sock is a completely unnecessary AI-ish face analysis system that determines what kind of foot energy you possess. Point your camera at yourself, let the sock analyze your face, and receive a completely fictional foot-size compatibility report.
 
 ### The Problem (that doesn't exist)
-[What ridiculous problem are you solving?]
+Humans have spent years solving actual problems like healthcare, transportation, and climate change.
+But nobody has answered the most important question:
+
+“If my face were a foot, what size would it be?”
+
+There was clearly a massive gap in the market for completely unscientific facial-to-foot analysis.
 
 ### The Solution (that nobody asked for)
-[How are you solving it? Keep it fun!]
+Sorting Sock uses your webcam and computer vision to detect your face and smile, extracts facial features, and compares them against a synthetic dataset of 1,000 fictional humans.
+The closest matches determine your:
+
+👣 Estimated Foot Size
+🧦 Foot Compatibility
+📊 Completely Scientific™ Foot Fetish Percentage
+
+A pixel-art sock then delivers your verdict because apparently the sock knows best.
+
+Technical Details
+Technologies/Components Used
 
 ## Technical Details
 ### Technologies/Components Used
 For Software:
-- [Languages used]
-- [Frameworks used]
-- [Libraries used]
-- [Tools used]
+
+Languages: HTML, CSS, JavaScript
+Frameworks: None — vanilla JavaScript
+Libraries:
+OpenCV.js
+Haar Cascade Classifiers
+Tools:
+Firebase Hosting
+Git / GitHub
+Canvas API
+Browser Web APIs
+Data:
+Synthetic JSON dataset containing 1,000 records
+
 
 For Hardware:
-- [List main components]
-- [List specifications]
-- [List tools required]
+No additional hardware required
+Any computer/laptop with:
+Webcam
+Modern web browser
+Internet connection
+Implementation
 
 ### Implementation
 For Software:
+The application follows this pipeline:
+
+Webcam
+   ↓
+OpenCV.js
+   ↓
+Face Detection
+   ↓
+Smile Detection
+   ↓
+Facial Features
+   ↓
+Synthetic Dataset Matching
+   ↓
+10 Closest Records
+   ↓
+Average Results
+   ↓
+Foot Analysis
+
+The application runs the computer-vision processing directly in the browser.
+
+The face is detected using OpenCV.js and a pre-trained Haar Cascade classifier. The extracted facial measurements are then compared against the synthetic dataset using a nearest-neighbor similarity approach.
+
+Important: The foot-related results are intentionally fictional and are not a scientifically valid way to determine foot size, personality, or anything else about a person.
 # Installation
-[commands]
+Clone the repository and open the project:
 
+git clone <your-github-repository-url>
+cd sorting-sock
+
+No package installation is required because the project uses vanilla HTML/CSS/JavaScript and OpenCV.js.
 # Run
-[commands]
-
+# Installation
+git clone <your-github-repository-url>
+cd sorting-sock
+firebase serve
+# Run
+firebase serve
+# Deploy
+firebase deploy
 ### Project Documentation
 For Software:
 
