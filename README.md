@@ -110,50 +110,32 @@ firebase deploy
 For Software:
 
 # Screenshots (Add at least 3)
-![Screenshot1](Add screenshot 1 here with proper name)
-*Add caption explaining what this shows*
+https://drive.google.com/file/d/1we0aBj8Fs7w-00qv_P6vttWV0f8PQJ5g/view?usp=sharing
+The initial Sorting Sock interface featuring the pixel-art sock and retro 8-bit visual design.
 
-![Screenshot2](Add screenshot 2 here with proper name)
-*Add caption explaining what this shows*
+https://drive.google.com/file/d/1MtNd7eFKYoECAjs6BBN3ZzgCMZbJo8IA/view?usp=sharing
+The webcam interface while Sorting Sock detects and analyzes the user's face.
 
-![Screenshot3](Add screenshot 3 here with proper name)
-*Add caption explaining what this shows*
+https://drive.google.com/file/d/19HRlp0u2dC0db-ghLDjWhx0NqEcy8M6m/view?usp=sharing
+The final arcade-style results screen displaying the user's fictional foot analysis.
 
 # Diagrams
-![Workflow](Add your workflow/architecture diagram here)
-*Add caption explaining your workflow*
+https://drive.google.com/file/d/1IXW3vFkBzO3Kj9ZJgrhX4oBIWZEUBc7C/view?usp=sharing
+System workflow showing the path from webcam input through OpenCV face detection, synthetic dataset matching, and final result generation.
 
-For Hardware:
-
-# Schematic & Circuit
-![Circuit](Add your circuit diagram here)
-*Add caption explaining connections*
-
-![Schematic](Add your schematic diagram here)
-*Add caption explaining the schematic*
-
-# Build Photos
-![Components](Add photo of your components here)
-*List out all components shown*
-
-![Build](Add photos of build process here)
-*Explain the build steps*
-
-![Final](Add photo of final product here)
-*Explain the final build*
 
 ### Project Demo
 # Video
-[Add your demo video link here]
-*Explain what the video demonstrates*
+https://drive.google.com/file/d/1YA8I9b50aSUPLL8zdLs3BJvG-8ESVNCy/view?usp=sharing
+The demo shows the complete Sorting Sock experience, starting from the camera, detection of face and smile, running the three-second analysis, displaying the countdown and confetti and generating the final foot analysis
 
 # Additional Demos
-[Add any extra demo materials/links]
+https://mercury-a8766.web.app
 
 ## Team Contributions
-- [Name 1]: [Specific contributions]
-- [Name 2]: [Specific contributions]
-- [Name 3]: [Specific contributions]
+- Abhirami Lakshmanan: Full Stack Development
+- Sivanee C Prem: Full stack Development
+
 
 ---
 Made with ❤️ at TinkerHub Useless Projects 
